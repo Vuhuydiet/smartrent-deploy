@@ -1,0 +1,9 @@
+host: api.smartrent.vuhuydiet.xyz
+
+BEServer:
+  image:
+    tag: latest
+
+AIServer:
+  image:
+    tag: latest

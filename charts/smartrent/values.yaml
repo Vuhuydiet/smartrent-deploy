@@ -1,0 +1,21 @@
+host: undefined
+
+BEServer:
+  name: backend-server
+  image:
+    name: vuhuydiet/smartrent-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8080
+  targetPort: 8080
+  serviceType:
+
+AIServer:
+  name: ai-server
+  image:
+    name: vuhuydiet/smartrent-ai
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8000
+  targetPort: 8000
+  serviceType: ClusterIP
