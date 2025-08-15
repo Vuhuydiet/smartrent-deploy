@@ -1,4 +1,4 @@
-host: api.smartrent.vuhuydiet.xyz
+host: dev.smartrent-api.vuhuydiet.xyz
 
 BEServer:
   image:
