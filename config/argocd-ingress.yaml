@@ -10,11 +10,11 @@ spec:
   ingressClassName: nginx
   #  tls:
   #  - hosts:
-  #    - {{ .argocdServerHost }}
+  #    - argocd.smartrent.vuhuydiet.xyz
   #    secretName: letsencrypt-nginx-quote
 
   rules:
-    - host: { { .argocdServerHost } }
+    - host: argocd.smartrent.vuhuydiet.xyz
       http:
         paths:
           - path: /
