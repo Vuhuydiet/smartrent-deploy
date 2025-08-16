@@ -14,12 +14,34 @@ spec:
       labels:
         app: {{ .Values.AIServer.name }}
     spec:
-      contAIServerners:
+      containers:
         - name: {{ .Values.AIServer.name }}
           image: {{ .Values.AIServer.image.name }}:{{ .Values.AIServer.image.tag }}
           imagePullPolicy: {{ .Values.AIServer.image.pullPolicy }}
           ports:
-            - contAIServernerPort: {{ .Values.AIServer.port }}
+            - containerPort: {{ .Values.AIServer.port }}
+          {{- if or .Values.secrets.enabled .Values.sealedSecrets.enabled }}
+          envFrom:
+            {{- if .Values.secrets.enabled }}
+            - secretRef:
+                name: {{ .Values.AIServer.name }}-secrets
+            {{- end }}
+            {{- if .Values.sealedSecrets.enabled }}
+            - secretRef:
+                name: ai-server-secrets
+            {{- end }}
+            {{- if .Values.config.enabled }}
+            - configMapRef:
+                name: {{ .Values.AIServer.name }}-config
+            {{- end }}
+          {{- end }}
+          {{- if .Values.AIServer.env }}
+          env:
+          {{- range $key, $value := .Values.AIServer.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
 ---
 apiVersion: v1
 kind: Service

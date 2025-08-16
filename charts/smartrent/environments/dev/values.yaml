@@ -1,6 +1,25 @@
 host: dev.smartrent-api.vuhuydiet.xyz
 env: dev
 
+# Disable regular secrets since we're using sealed secrets
+secrets:
+  enabled: false
+
+# Enable sealed secrets
+sealedSecrets:
+  enabled: true
+
+config:
+  enabled: true
+  data:
+    VERSION: "1.0.0"
+    DEBUG: "true"
+    MYSQL_SERVER: "mysql.dev.svc.cluster.local"
+    MYSQL_USER: "smartrent"
+    MYSQL_DB: "smartrent_ai"
+    MYSQL_PORT: "3306"
+    ENVIRONMENT: "development"
+
 BEServer:
   image:
     tag: latest
@@ -8,3 +27,5 @@ BEServer:
 AIServer:
   image:
     tag: latest
+  env:
+    APP_NAME: "SmartRent AI Service"

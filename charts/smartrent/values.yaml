@@ -1,6 +1,19 @@
 host: undefined
 env: undefined
 
+# Secret Management Configuration
+secrets:
+  enabled: false
+  data: {}
+
+# Sealed Secrets Configuration
+sealedSecrets:
+  enabled: false
+
+config:
+  enabled: false
+  data: {}
+
 BEServer:
   name: backend-server
   image:
@@ -10,6 +23,7 @@ BEServer:
   port: 8080
   targetPort: 8080
   serviceType: clusterIP
+  env: {}
 
 AIServer:
   name: ai-server
@@ -20,3 +34,4 @@ AIServer:
   port: 8000
   targetPort: 8000
   serviceType: ClusterIP
+  env: {}
