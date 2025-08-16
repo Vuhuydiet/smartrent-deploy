@@ -1,37 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: { { .AIServer.name } }
+  name: {{ .Values.AIServer.name }}
   labels:
-    app: { { .AIServer.name } }
+    app: {{ .Values.AIServer.name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: { { .AIServer.name } }
+      app: {{ .Values.AIServer.name }}
   template:
     metadata:
       labels:
-        app: { { .AIServer.name } }
+        app: {{ .Values.AIServer.name }}
     spec:
       contAIServerners:
-        - name: { { .AIServer.name } }
-          image: "{{ .AIServer.image.name }}:{{ .AIServer.image.tag }}"
-          imagePullPolicy: { { .AIServer.image.pullPolicy } }
+        - name: {{ .Values.AIServer.name }}
+          image: {{ .Values.AIServer.image.name }}:{{ .Values.AIServer.image.tag }}
+          imagePullPolicy: {{ .Values.AIServer.image.pullPolicy }}
           ports:
-            - contAIServernerPort: { { .AIServer.port } }
+            - contAIServernerPort: {{ .Values.AIServer.port }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: { { .AIServer.name } }
+  name: {{ .Values.AIServer.name }}
 spec:
   selector:
-    app: { { .AIServer.name } }
+    app: {{ .Values.AIServer.name }}
   ports:
     - protocol: TCP
-      port: { { .AIServer.port } }
-      targetPort: { { .AIServer.targetPort } }
-  type: { { .AIServer.serviceType } }
+      port: {{ .Values.AIServer.port }}
+      targetPort: {{ .Values.AIServer.targetPort }}
+  type: {{ .Values.AIServer.serviceType }}
 ---
 

@@ -1,37 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: { { .BEServer.name } }
+  name: {{ .Values.BEServer.name }}
   labels:
-    app: { { .BEServer.name } }
+    app: {{ .Values.BEServer.name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: { { .BEServer.name } }
+      app: {{ .Values.BEServer.name }}
   template:
     metadata:
       labels:
-        app: { { .BEServer.name } }
+        app: {{ .Values.BEServer.name }}
     spec:
       contBEServerners:
-        - name: { { .BEServer.name } }
-          image: "{{ .BEServer.image.name }}:{{ .BEServer.image.tag }}"
-          imagePullPolicy: { { .BEServer.image.pullPolicy } }
+        - name: {{ .Values.BEServer.name }}
+          image: {{ .Values.BEServer.image.name }}:{{ .Values.BEServer.image.tag }}
+          imagePullPolicy: {{ .Values.BEServer.image.pullPolicy }}
           ports:
-            - contBEServernerPort: { { .BEServer.port } }
+            - contBEServernerPort: {{ .Values.BEServer.port }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: { { .BEServer.name } }
+  name: {{ .Values.BEServer.name }}
 spec:
   selector:
-    app: { { .BEServer.name } }
+    app: {{ .Values.BEServer.name }}
   ports:
     - protocol: TCP
-      port: { { .BEServer.port } }
-      targetPort: { { .BEServer.targetPort } }
-  type: { { .BEServer.serviceType } }
+      port: {{ .Values.BEServer.port }}
+      targetPort: {{ .Values.BEServer.targetPort }}
+  type: {{ .Values.BEServer.serviceType }}
 ---
 

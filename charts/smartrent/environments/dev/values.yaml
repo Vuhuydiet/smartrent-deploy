@@ -1,4 +1,5 @@
 host: dev.smartrent-api.vuhuydiet.xyz
+env: dev
 
 BEServer:
   image:

@@ -7,13 +7,25 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: { { .host } }
+    - host: {{ .host }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: backend
+                name: {{ .Values.BEServer.name }}
                 port:
-                  number: { { .BEServer.port } }
+                  number: {{ .Values.BEServer.port }}
+{{- if eq .env "dev" }}
+    - host: ai.{{ .Values.host }}
+      http:
+        paths:
+          - path: /ai
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.AIServer.name }}
+                port:
+                  number: {{ .Values.AIServer.port }}
+{{- end }}
