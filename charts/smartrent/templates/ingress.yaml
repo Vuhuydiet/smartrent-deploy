@@ -21,7 +21,7 @@ spec:
     - host: ai.{{ .Values.host }}
       http:
         paths:
-          - path: /ai
+          - path: /
             pathType: Prefix
             backend:
               service:
