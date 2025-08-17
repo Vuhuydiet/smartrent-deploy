@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Sealed Secrets Management Script for SmartRent AI
-# Usage: ./manage-secrets.sh [environment] [action] [secret-name] [secret-value]
+# Usage: ./manage-secrets.sh.sh [environment] [action] [secret-name] [secret-value]
 
 set -e
 

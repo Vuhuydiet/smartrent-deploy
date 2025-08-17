@@ -69,14 +69,22 @@ if [ "$INSTALL_KUBESEAL" = true ]; then
     echo "📦 Installing kubeseal $LATEST_VERSION..."
     
     # Download kubeseal
-    DOWNLOAD_URL="https://github.com/bitnami-labs/sealed-secrets/releases/download/$LATEST_VERSION/kubeseal-$LATEST_VERSION-$OS_TYPE-$ARCH_TYPE.tar.gz"
+    # Remove 'v' prefix from version for the filename
+    VERSION_NO_V=${LATEST_VERSION#v}
+    DOWNLOAD_URL="https://github.com/bitnami-labs/sealed-secrets/releases/download/$LATEST_VERSION/kubeseal-$VERSION_NO_V-$OS_TYPE-$ARCH_TYPE.tar.gz"
     
     # Create temporary directory
     TEMP_DIR=$(mktemp -d)
     cd "$TEMP_DIR"
     
     echo "⬇️  Downloading from: $DOWNLOAD_URL"
-    curl -sL "$DOWNLOAD_URL" | tar xz
+    if curl -sLf "$DOWNLOAD_URL" | tar xz; then
+        echo "✅ Successfully downloaded and extracted kubeseal"
+    else
+        echo "❌ Failed to download kubeseal from $DOWNLOAD_URL"
+        echo "Please check your internet connection and try again"
+        exit 1
+    fi
     
     # Install to /usr/local/bin (requires sudo) or ~/bin
     if [ -w "/usr/local/bin" ]; then
@@ -120,22 +128,32 @@ echo "✅ Scripts are now executable"
 
 # Check if sealed-secrets controller is installed
 echo "🔍 Checking sealed-secrets controller..."
-if kubectl get deployment sealed-secrets-controller -n kube-system &> /dev/null; then
-    echo "✅ Sealed-secrets controller is installed"
-elif kubectl get deployment sealed-secrets-controller -n sealed-secrets &> /dev/null; then
-    echo "✅ Sealed-secrets controller is installed"
-else
-    echo "⚠️  Sealed-secrets controller not found"
-    read -p "Install sealed-secrets controller now? (y/N): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo "📦 Installing sealed-secrets controller..."
-        kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.24.0/controller.yaml
-        echo "✅ Sealed-secrets controller installed"
+if kubectl cluster-info &> /dev/null; then
+    if kubectl get deployment sealed-secrets-controller -n kube-system &> /dev/null; then
+        echo "✅ Sealed-secrets controller is installed"
+    elif kubectl get deployment sealed-secrets-controller -n sealed-secrets &> /dev/null; then
+        echo "✅ Sealed-secrets controller is installed"
     else
-        echo "⏭️  Skipped sealed-secrets controller installation"
-        echo "   Install later with: kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.24.0/controller.yaml"
+        echo "⚠️  Sealed-secrets controller not found"
+        read -p "Install sealed-secrets controller now? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo "📦 Installing sealed-secrets controller..."
+            if kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/$LATEST_VERSION/controller.yaml; then
+                echo "✅ Sealed-secrets controller installed"
+            else
+                echo "❌ Failed to install sealed-secrets controller"
+                echo "   You can install it later with: kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/$LATEST_VERSION/controller.yaml"
+            fi
+        else
+            echo "⏭️  Skipped sealed-secrets controller installation"
+            echo "   Install later with: kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/$LATEST_VERSION/controller.yaml"
+        fi
     fi
+else
+    echo "⚠️  kubectl is not connected to a cluster or cluster is not accessible"
+    echo "   Connect to your Kubernetes cluster first to install the sealed-secrets controller"
+    echo "   Install later with: kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/$LATEST_VERSION/controller.yaml"
 fi
 
 echo ""
@@ -151,4 +169,3 @@ echo "   Test Helm chart: helm template charts/smartrent/ --values charts/smartr
 echo "   Lint chart:      helm lint charts/smartrent/"
 echo "   Apply ArgoCD:    kubectl apply -f apps/dev-application.yaml"
 echo ""
-echo "💡 Note: Windows users can use scripts/kubeseal.exe and scripts/manage-secrets.ps1"

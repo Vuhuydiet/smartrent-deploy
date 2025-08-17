@@ -22,7 +22,7 @@ smartrent-deploy/
 ├── config/                        # Infrastructure configs
 │   └── argocd-ingress.yaml       # ArgoCD ingress
 ├── scripts/                       # Helper scripts
-│   ├── manage-secrets             # Sealed secrets management
+│   ├── manage-secrets.sh             # Sealed secrets management
 │   └── setup.sh                   # Environment setup script
 └── Makefile                       # Task runner
 ```
@@ -38,46 +38,13 @@ smartrent-deploy/
 
 Use the task runner to set up the environment:
 ```bash
-make setup
-```
-
-Or manually install the Sealed Secrets controller:
-```bash
-kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.24.0/controller.yaml
+  make setup
 ```
 
 ### Apply ArgoCD Application
 ```bash
-kubectl apply -f apps/dev-application.yaml
+  kubectl apply -f apps/dev-application.yaml
 ```
-Or use the task runner:
-```bash
-make apply-dev
-```
-
-### Managing Secrets
-
-```bash
-# List current secrets
-make secret-list
-
-# Add new secret
-make create-secret NAME=API_KEY VALUE=your-secret-value
-
-# Update existing secret
-make update-secret NAME=MYSQL_PASSWORD VALUE=new-password
-```
-
-### Environment Variables
-Your application uses these environment variables:
-- `MYSQL_PASSWORD` - Database password (sealed secret)
-- `MYSQL_SERVER` - Database server (config)
-- `MYSQL_USER` - Database username (config)
-- `MYSQL_DB` - Database name (config)
-- `MYSQL_PORT` - Database port (config)
-- `ENVIRONMENT` - Environment name (config)
-- `DEBUG` - Debug mode flag (config)
-- `VERSION` - Application version (config)
 
 ## 🔐 Security
 
@@ -104,39 +71,21 @@ All documentation is contained in this README. The project structure is self-doc
 Make provides a consistent experience for running common tasks:
 
 ```bash
-# Show available commands
-make help
+  # Setup environment
+  make setup
 
-# Setup environment
-make setup
+  # Test Helm chart
+  make lint
+  make template
 
-# Test Helm chart
-make lint
-make template
+  # Apply to cluster
+  make apply-dev
 
-# Apply to cluster
-make apply-dev
+  # Manage secrets
+  make secret-list
+  make create-secret NAME=API_KEY VALUE=your-secret-value
+  make update-secret NAME=MYSQL_PASSWORD VALUE=new-password
 
-# Manage secrets
-make secret-list
-make create-secret NAME=API_KEY VALUE=your-secret-value
-make update-secret NAME=MYSQL_PASSWORD VALUE=new-password
-
-# Check status
-make status
-make logs-ai
-```
-
-### Manual Commands
-Test Helm chart locally:
-```bash
-helm lint charts/smartrent/
-helm template charts/smartrent/ --values charts/smartrent/environments/dev/values.yaml
-```
-
-### Direct Script Usage (Advanced)
-For advanced users who prefer direct script access:
-```bash
-./scripts/setup.sh
-./scripts/manage-secrets dev list
+  # Check status
+  make status
 ```
