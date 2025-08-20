@@ -22,7 +22,7 @@ config:
 
 BEServer:
   image:
-    tag: latest
+    tag: 448c3506
 
 AIServer:
   image:
