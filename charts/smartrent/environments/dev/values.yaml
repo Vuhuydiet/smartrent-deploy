@@ -26,6 +26,6 @@ BEServer:
 
 AIServer:
   image:
-    tag: latest
+    tag: 632ed424
   env:
     APP_NAME: "SmartRent AI Service"
