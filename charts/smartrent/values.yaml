@@ -1,19 +1,6 @@
 host: undefined
 env: undefined
 
-# Secret Management Configuration
-secrets:
-  enabled: false
-  data: {}
-
-# Sealed Secrets Configuration
-sealedSecrets:
-  enabled: false
-
-config:
-  enabled: false
-  data: {}
-
 BEServer:
   name: backend-server
   image:

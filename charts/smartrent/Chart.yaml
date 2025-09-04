@@ -2,6 +2,6 @@ apiVersion: v2
 name: smartrent
 description: A Helm chart for Kubernetes for the Smart Rent application
 type: application
-version: 0.1.13
+version: 0.0.1
 appVersion: "1.0.0"
 icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/kubernetes/icon/color/kubernetes-icon-color.svg

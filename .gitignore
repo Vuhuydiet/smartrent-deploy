@@ -1,6 +1,7 @@
 
 *.exe
 charts/**/secrets/
+**/*secrets.yaml
 diff/
 tmp/
 .ignore/

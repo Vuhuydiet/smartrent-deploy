@@ -1,17 +1,6 @@
 host: dev.smartrent-api.vuhuydiet.xyz
 env: dev
 
-# Disable regular secrets since we're using sealed secrets
-secrets:
-  enabled: false
-
-# Enable sealed secrets
-sealedSecrets:
-  enabled: true
-
-config:
-  enabled: false
-
 BEServer:
   image:
     tag: 9fa16c3b
