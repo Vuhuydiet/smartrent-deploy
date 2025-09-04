@@ -18,7 +18,7 @@ BEServer:
 
 AIServer:
   image:
-    tag: 5d7c8e35
+    tag: d28a8d4b
   env:
     APP_NAME: "SmartRent AI Service"
     VERSION: "1.0.0"
