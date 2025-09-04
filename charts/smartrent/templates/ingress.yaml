@@ -17,6 +17,16 @@ spec:
     #             name: {{ .Values.BEServer.name }}
     #             port:
     #               number: {{ .Values.BEServer.port }}
+    - host: scraper.{{ .Values.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.ScraperServer.name }}
+                port:
+                  number: {{ .Values.ScraperServer.port }}
 {{- if eq .Values.env "dev" }}
     - host: ai.{{ .Values.host }}
       http:
