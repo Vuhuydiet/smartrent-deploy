@@ -27,7 +27,7 @@ AIServer:
 
 ScraperServer:
   image:
-    tag: latest
+    tag: dev-6560ea2a
   env:
     NODE_ENV: "development"
     PORT: "3000"
