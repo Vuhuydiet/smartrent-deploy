@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.AIServer.name }}
+  labels:
+    app: {{ .Values.AIServer.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.AIServer.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.AIServer.name }}
+    spec:
+      containers:
+        - name: {{ .Values.AIServer.name }}
+          image: {{ .Values.AIServer.image.name }}:{{ .Values.AIServer.image.tag }}
+          imagePullPolicy: {{ .Values.AIServer.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.AIServer.port }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.AIServer.secrets.name }}
+          env:
+            - name: ENVIRONMENT
+              value: {{ .Values.env | quote }}
+          {{- range $key, $value := .Values.AIServer.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.AIServer.name }}
+spec:
+  selector:
+    app: {{ .Values.AIServer.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.AIServer.port }}
+      targetPort: {{ .Values.AIServer.targetPort }}
+  type: {{ .Values.AIServer.serviceType }}
+---
+

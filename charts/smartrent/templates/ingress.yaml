@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: smartrent-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    # - host: {{ .host }}
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: {{ .Values.BEServer.name }}
+    #             port:
+    #               number: {{ .Values.BEServer.port }}
+{{- if eq .env "dev" }}
+    - host: ai.{{ .Values.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.AIServer.name }}
+                port:
+                  number: {{ .Values.AIServer.port }}
+{{- end }}

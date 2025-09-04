@@ -1,0 +1,6 @@
+# Ensure shell scripts have proper line endings
+*.sh text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+Makefile text eol=lf

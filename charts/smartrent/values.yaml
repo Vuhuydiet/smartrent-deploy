@@ -1,0 +1,76 @@
+host: undefined
+env: undefined
+
+# Secret Management Configuration
+secrets:
+  enabled: false
+  data: {}
+
+# Sealed Secrets Configuration
+sealedSecrets:
+  enabled: false
+
+config:
+  enabled: false
+  data: {}
+
+BEServer:
+  name: backend-server
+  image:
+    name: vuhuydiet/smartrent-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8080
+  targetPort: 8080
+  serviceType: clusterIP
+  secrets:
+    name: backend-server-secrets
+  env: {}
+
+AIServer:
+  name: ai-server
+  image:
+    name: vuhuydiet/smartrent-ai
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8000
+  targetPort: 8000
+  serviceType: ClusterIP
+  secrets:
+    name: ai-server-secrets
+  env:
+    VERSION: "1.0.0"
+    ENVIRONMENT: "development"
+    DEBUG: "false"
+
+ScraperServer:
+  name: scraper-server
+  image:
+    name: vuhuydiet/smartrent-scraper
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 3000
+  targetPort: 3000
+  serviceType: ClusterIP
+  secrets:
+    name: scraper-server-secrets
+  env:
+    NODE_ENV: "development"
+    PORT: "3000"
+    LOG_LEVEL: "info"
+    MAX_CONCURRENT_SCRAPERS: "5"
+    REQUEST_DELAY_MS: "1000"
+    RETRY_ATTEMPTS: "3"
+    TIMEOUT_MS: "30000"
+    HEADLESS: "true"
+    BROWSER_ARGS: "--no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage"
+    RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
+    BURST_LIMIT: "10"
+    DATA_OUTPUT_DIR: "./data"
+    LOG_OUTPUT_DIR: "./logs"
+    DEBUG: "false"
+    TEST_MODE: "false"
+    MAX_TEST_PAGES: "5"
+    MEMORY_LIMIT: "512"
+    MAX_EXPORT_FILE_SIZE: "100"
+    CLEANUP_DAYS: "30"

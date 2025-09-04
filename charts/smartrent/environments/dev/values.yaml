@@ -1,0 +1,35 @@
+host: dev.smartrent-api.vuhuydiet.xyz
+env: dev
+
+# Disable regular secrets since we're using sealed secrets
+secrets:
+  enabled: false
+
+# Enable sealed secrets
+sealedSecrets:
+  enabled: true
+
+config:
+  enabled: false
+
+BEServer:
+  image:
+    tag: 9fa16c3b
+
+AIServer:
+  image:
+    tag: 632ed424
+  env:
+    APP_NAME: "SmartRent AI Service"
+    VERSION: "1.0.0"
+    ENVIRONMENT: "development"
+    DEBUG: "true"
+
+ScraperServer:
+  image:
+    tag: latest
+  env:
+    NODE_ENV: "development"
+    PORT: "3000"
+    LOG_LEVEL: "debug"
+    DEBUG: "true"

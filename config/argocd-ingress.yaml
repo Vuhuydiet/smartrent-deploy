@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress
+  namespace: argocd
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+#    cert-manager.io/issuer: letsencrypt-nginx
+spec:
+  ingressClassName: nginx
+  #  tls:
+  #  - hosts:
+  #    - argocd.smartrent.vuhuydiet.xyz
+  #    secretName: letsencrypt-nginx-quote
+
+  rules:
+    - host: argocd.smartrent.vuhuydiet.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 443

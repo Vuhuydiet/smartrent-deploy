@@ -1,0 +1,6 @@
+
+*.exe
+charts/**/secrets/
+diff/
+tmp/
+.ignore/

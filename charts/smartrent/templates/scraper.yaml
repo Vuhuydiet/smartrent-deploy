@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.ScraperServer.name }}
+  labels:
+    app: {{ .Values.ScraperServer.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.ScraperServer.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.ScraperServer.name }}
+    spec:
+      containers:
+        - name: {{ .Values.ScraperServer.name }}
+          image: {{ .Values.ScraperServer.image.name }}:{{ .Values.ScraperServer.image.tag }}
+          imagePullPolicy: {{ .Values.ScraperServer.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.ScraperServer.port }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.ScraperServer.secrets.name }}
+          env:
+          {{- range $key, $value := .Values.ScraperServer.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.ScraperServer.name }}
+spec:
+  selector:
+    app: {{ .Values.ScraperServer.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.ScraperServer.port }}
+      targetPort: {{ .Values.ScraperServer.targetPort }}
+  type: {{ .Values.ScraperServer.serviceType }}
+---
