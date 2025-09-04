@@ -22,7 +22,7 @@ BEServer:
     pullPolicy: IfNotPresent
   port: 8080
   targetPort: 8080
-  serviceType: clusterIP
+  serviceType: ClusterIP
   secrets:
     name: backend-server-secrets
   env: {}
