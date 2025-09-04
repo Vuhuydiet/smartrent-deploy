@@ -17,7 +17,7 @@ spec:
     #             name: {{ .Values.BEServer.name }}
     #             port:
     #               number: {{ .Values.BEServer.port }}
-{{- if eq .env "dev" }}
+{{- if eq .Values.env "dev" }}
     - host: ai.{{ .Values.host }}
       http:
         paths:
