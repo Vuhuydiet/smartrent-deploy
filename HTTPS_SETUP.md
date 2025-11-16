@@ -36,33 +36,41 @@ kubectl apply -f config/cert-manager-issuer.yaml
 kubectl get clusterissuer
 ```
 
-### 3. Deploy with HTTPS
+### 3. Deploy with HTTPS (ArgoCD GitOps)
 
 The ingress configuration is now set up to automatically request SSL certificates from Let's Encrypt.
 
 ```bash
-# Deploy using Helm
-helm upgrade --install smartrent ./charts/smartrent \
-  -f charts/smartrent/environments/dev/values.yaml \
-  -f charts/smartrent/environments/dev/secrets.yaml \
-  --namespace smartrent \
-  --create-namespace
+# Commit and push your changes to the repository
+git add .
+git commit -m "Configure HTTPS with cert-manager"
+git push
 
-# Check certificate status
-kubectl get certificate -n smartrent
-kubectl describe certificate smartrent-tls-dev -n smartrent
+# ArgoCD will automatically sync the changes
+# Or manually sync via ArgoCD UI or CLI:
+argocd app sync smartrent-dev
+
+# Check certificate status (namespace is 'dev' for dev environment)
+kubectl get certificate -n dev
+kubectl describe certificate smartrent-tls-dev -n dev
 ```
+
+**Note:** ArgoCD is configured with automated sync, so changes will be applied automatically within a few minutes after pushing to the repository.
 
 ### 4. Verify HTTPS
 
 Once the certificate is issued (can take a few minutes):
 
 ```bash
+# Check ArgoCD sync status
+kubectl get applications -n argocd
+argocd app get smartrent-dev
+
 # Check certificate
-kubectl get certificate -n smartrent
+kubectl get certificate -n dev
 
 # Check ingress
-kubectl get ingress -n smartrent
+kubectl get ingress -n dev
 
 # Test HTTPS endpoints
 curl https://dev.smartrent-api.vuhuydiet.xyz/actuator/health
@@ -106,15 +114,18 @@ The following URLs have been updated to use HTTPS:
 ### Certificate not issuing
 
 ```bash
+# Check ArgoCD application status first
+argocd app get smartrent-dev
+
 # Check certificate status
-kubectl describe certificate smartrent-tls-dev -n smartrent
+kubectl describe certificate smartrent-tls-dev -n dev
 
 # Check cert-manager logs
 kubectl logs -n cert-manager -l app=cert-manager
 
 # Check certificate request
-kubectl get certificaterequest -n smartrent
-kubectl describe certificaterequest -n smartrent
+kubectl get certificaterequest -n dev
+kubectl describe certificaterequest -n dev
 ```
 
 ### Let's Encrypt Rate Limits
@@ -150,11 +161,32 @@ nslookup ai.dev.smartrent-api.vuhuydiet.xyz
 4. 🔄 Consider adding HSTS headers for enhanced security
 5. 🔄 Consider implementing rate limiting at ingress level
 
+## ArgoCD GitOps Workflow
+
+Since you're using ArgoCD, the deployment process is simplified:
+
+1. **Make changes** to your configuration files in this repository
+2. **Commit and push** to GitHub
+3. **ArgoCD automatically syncs** (configured with `automated: selfHeal: true`)
+4. **Verify** the deployment in ArgoCD UI or CLI
+
+```bash
+# Watch ArgoCD sync in real-time
+argocd app watch smartrent-dev
+
+# Manual sync if needed
+argocd app sync smartrent-dev
+
+# Check sync status
+argocd app get smartrent-dev
+```
+
 ## Next Steps
 
-1. Update your email in `config/cert-manager-issuer.yaml`
-2. Apply the ClusterIssuer: `kubectl apply -f config/cert-manager-issuer.yaml`
-3. Deploy or upgrade your Helm chart
-4. Verify certificates are issued successfully
-5. Test all HTTPS endpoints
-6. Update production environment similarly
+1. ✅ Update your email in `config/cert-manager-issuer.yaml`
+2. ✅ Apply the ClusterIssuer: `kubectl apply -f config/cert-manager-issuer.yaml`
+3. ✅ Commit and push changes: `git add . && git commit -m "Configure HTTPS" && git push`
+4. ⏳ Wait for ArgoCD to sync (or manually sync)
+5. ✅ Verify certificates are issued: `kubectl get certificate -n dev`
+6. ✅ Test all HTTPS endpoints
+7. 🔄 Update production environment similarly in `environments/prd/values.yaml`
