@@ -2,7 +2,7 @@ host: dev.smartrent-api.vuhuydiet.xyz
 env: dev
 BEServer:
   image:
-    tag: 24dde124db2fa7171a75d6f43e54b0122d471747
+    tag: 833a0bd11eba6b695c36a1e5829985e8458b23eb
 AIServer:
   image:
     tag: dev-3146edd
