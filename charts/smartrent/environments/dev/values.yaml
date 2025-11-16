@@ -1,6 +1,5 @@
 host: dev.smartrent-api.vuhuydiet.xyz
 env: dev
-
 BEServer:
   replicas: 1
   image:
@@ -51,7 +50,6 @@ AIServer:
     VERSION: "1.0.0"
     ENVIRONMENT: "development"
     DEBUG: "true"
-
 ScraperServer:
   image:
     tag: dev-d2f0522
