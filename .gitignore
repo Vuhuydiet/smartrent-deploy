@@ -1,7 +1,10 @@
-
 *.exe
 charts/**/secrets/
 **/*secrets.yaml
+secrets.yaml
+secrets-dev.yaml
+secrets-prd.yaml
 diff/
 tmp/
 .ignore/
+charts/**/environments/**/secrets.yaml

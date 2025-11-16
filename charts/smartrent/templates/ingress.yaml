@@ -7,16 +7,16 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    # - host: {{ .host }}
-    #   http:
-    #     paths:
-    #       - path: /
-    #         pathType: Prefix
-    #         backend:
-    #           service:
-    #             name: {{ .Values.BEServer.name }}
-    #             port:
-    #               number: {{ .Values.BEServer.port }}
+    - host: {{ .Values.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.BEServer.name }}
+                port:
+                  number: {{ .Values.BEServer.port }}
     - host: scraper.{{ .Values.host }}
       http:
         paths:

@@ -2,8 +2,46 @@ host: dev.smartrent-api.vuhuydiet.xyz
 env: dev
 
 BEServer:
+  replicas: 1
   image:
-    tag: 9fa16c3b
+    tag: latest
+  env:
+    SPRING_PROFILES_ACTIVE: "dev"
+    SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/smartrent?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+    SPRING_DATA_REDIS_HOST: "redis"
+    SPRING_DATA_REDIS_PORT: "6379"
+    LOGGING_LEVEL_ROOT: "DEBUG"
+    LOGGING_LEVEL_COM_SMARTRENT: "DEBUG"
+    # JWT Configuration
+    VALID_DURATION: "3600"
+    REFRESHABLE_DURATION: "86400"
+    RESET_PASSWORD_DURATION: "900"
+    # Email Configuration
+    SENDER_EMAIL: "smartrent.tools@gmail.com"
+    SENDER_NAME: "SmartRent"
+    # Google OAuth
+    GOOGLE_AUTH_CLIENT_REDIRECT_URI: "http://localhost:3000/auth/callback/google"
+    # S3 Storage
+    S3_ENDPOINT: "https://9f3257b84fff2eb2cd583b3ba1a29aa1.r2.cloudflarestorage.com"
+    S3_REGION: "auto"
+    S3_BUCKET: "smart-rent"
+    S3_PUBLIC_URL: "https://pub-444e165e3cc34721a5620508f66c58b0.r2.dev"
+    S3_MAX_FILE_SIZE_MB: "100"
+    # VNPay
+    VNPAY_PAYMENT_URL: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+    VNPAY_QUERY_URL: "sandbox.vnpayment.vn"
+    VNPAY_RETURN_URL: "http://smartrent-fe.vercel.app/payment/result"
+    VNPAY_IPN_URL: "http://localhost:8080/v1/payments/ipn/VNPAY"
+    # Client URL
+    CLIENT_URL: "http://smartrent-fe.vercel.app"
+    CACHE_TYPE: "redis"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
 
 AIServer:
   image:

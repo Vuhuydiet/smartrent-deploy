@@ -2,8 +2,27 @@ host: smartrent-api.vuhuydiet.xyz
 env: prd
 
 BEServer:
+  replicas: 2
   image:
-    tag: 9fa16c3b
+    tag: stable
+    pullPolicy: Always
+  env:
+    SPRING_PROFILES_ACTIVE: "production"
+    SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/smartrent?useSSL=true&serverTimezone=UTC"
+    SPRING_DATA_REDIS_HOST: "redis"
+    SPRING_DATA_REDIS_PORT: "6379"
+    AWS_REGION: "auto"
+    AWS_S3_BUCKET: "smartrent-prd-storage"
+    AWS_S3_ENDPOINT: "https://your-account-id.r2.cloudflarestorage.com"
+    LOGGING_LEVEL_ROOT: "WARN"
+    LOGGING_LEVEL_COM_SMARTRENT: "INFO"
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "2000m"
 
 AIServer:
   image:
@@ -22,3 +41,7 @@ ScraperServer:
     PORT: "3000"
     LOG_LEVEL: "info"
     DEBUG: "false"
+
+# Enable Redis password in production
+redis:
+  password: true

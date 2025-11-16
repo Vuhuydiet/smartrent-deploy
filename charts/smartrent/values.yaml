@@ -3,6 +3,7 @@ env: undefined
 
 BEServer:
   name: backend-server
+  replicas: 1
   image:
     name: vuhuydiet/smartrent-backend
     tag: latest
@@ -12,7 +13,34 @@ BEServer:
   serviceType: ClusterIP
   secrets:
     name: backend-server-secrets
-  env: {}
+  env:
+    SPRING_PROFILES_ACTIVE: "production"
+    # Database Configuration (default values, override in environment-specific values)
+    SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/smartrent?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+    # Redis Configuration
+    SPRING_DATA_REDIS_HOST: "redis"
+    SPRING_DATA_REDIS_PORT: "6379"
+    # JWT Configuration
+    JWT_EXPIRATION: "86400000" # 24 hours in milliseconds
+    # AWS S3 / Cloudflare R2 Configuration
+    AWS_REGION: "auto"
+    AWS_S3_BUCKET: "smartrent-storage"
+    AWS_S3_ENDPOINT: "https://your-account-id.r2.cloudflarestorage.com"
+    # SMS/OTP Configuration
+    TWILIO_PHONE_NUMBER: ""
+    ZALO_OA_ID: ""
+    # Logging
+    LOGGING_LEVEL_ROOT: "INFO"
+    LOGGING_LEVEL_COM_SMARTRENT: "INFO"
+    # Additional environment variables
+    additional: {}
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
 
 AIServer:
   name: ai-server
@@ -61,3 +89,31 @@ ScraperServer:
     MEMORY_LIMIT: "512"
     MAX_EXPORT_FILE_SIZE: "100"
     CLEANUP_DAYS: "30"
+
+# Redis Configuration
+redis:
+  password: false  # Set to true if you want to enable Redis password authentication
+
+# Secrets Configuration
+# IMPORTANT: DO NOT commit actual secrets to git!
+# Use external secrets management (e.g., Sealed Secrets, External Secrets Operator, or ArgoCD Vault Plugin)
+# Or create secrets manually using kubectl before deployment
+secrets:
+  create: false  # Set to true only for development/testing
+  backend:
+    dbUsername: "smartrent_user"
+    dbPassword: "CHANGE_ME"
+    redisPassword: ""
+    jwtSecret: "CHANGE_ME_TO_LONG_RANDOM_STRING"
+    awsAccessKeyId: "CHANGE_ME"
+    awsSecretAccessKey: "CHANGE_ME"
+    twilioAccountSid: ""
+    twilioAuthToken: ""
+    zaloAppId: ""
+    zaloAppSecret: ""
+  mysql:
+    rootPassword: "CHANGE_ME"
+    username: "smartrent_user"
+    password: "CHANGE_ME"
+  redis:
+    password: ""

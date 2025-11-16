@@ -4,8 +4,9 @@ metadata:
   name: {{ .Values.BEServer.name }}
   labels:
     app: {{ .Values.BEServer.name }}
+    version: {{ .Values.BEServer.image.tag }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.BEServer.replicas | default 1 }}
   selector:
     matchLabels:
       app: {{ .Values.BEServer.name }}
@@ -13,23 +14,193 @@ spec:
     metadata:
       labels:
         app: {{ .Values.BEServer.name }}
+        version: {{ .Values.BEServer.image.tag }}
     spec:
       containers:
         - name: {{ .Values.BEServer.name }}
           image: {{ .Values.BEServer.image.name }}:{{ .Values.BEServer.image.tag }}
           imagePullPolicy: {{ .Values.BEServer.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.BEServer.port }}
+            - name: http
+              containerPort: {{ .Values.BEServer.port }}
+              protocol: TCP
+          env:
+            # Spring Profile
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.BEServer.env.SPRING_PROFILES_ACTIVE | default "production" | quote }}
+            # Database Configuration
+            - name: IDENTITY_SERVICE_DB_URL
+              value: {{ .Values.BEServer.env.SPRING_DATASOURCE_URL | quote }}
+            - name: SPRING_DATASOURCE_URL
+              value: {{ .Values.BEServer.env.SPRING_DATASOURCE_URL | quote }}
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: db-username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: db-password
+            # Redis Configuration
+            - name: REDIS_HOST
+              value: {{ .Values.BEServer.env.SPRING_DATA_REDIS_HOST | quote }}
+            - name: REDIS_USERNAME
+              value: ""
+            - name: REDIS_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: redis-password
+                  optional: true
+            - name: SPRING_DATA_REDIS_HOST
+              value: {{ .Values.BEServer.env.SPRING_DATA_REDIS_HOST | quote }}
+            - name: SPRING_DATA_REDIS_PORT
+              value: {{ .Values.BEServer.env.SPRING_DATA_REDIS_PORT | default "6379" | quote }}
+            - name: SPRING_DATA_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: redis-password
+                  optional: true
+            # JWT Configuration
+            - name: ACCESS_SIGNER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: jwt-access-signer-key
+            - name: REFRESH_SIGNER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: jwt-refresh-signer-key
+            - name: RESET_PASSWORD_SIGNER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: jwt-reset-password-signer-key
+            - name: VALID_DURATION
+              value: {{ .Values.BEServer.env.VALID_DURATION | default "3600" | quote }}
+            - name: REFRESHABLE_DURATION
+              value: {{ .Values.BEServer.env.REFRESHABLE_DURATION | default "86400" | quote }}
+            - name: RESET_PASSWORD_DURATION
+              value: {{ .Values.BEServer.env.RESET_PASSWORD_DURATION | default "900" | quote }}
+            # Email (Brevo) Configuration
+            - name: BREVO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: brevo-api-key
+            - name: SENDER_EMAIL
+              value: {{ .Values.BEServer.env.SENDER_EMAIL | quote }}
+            - name: SENDER_NAME
+              value: {{ .Values.BEServer.env.SENDER_NAME | quote }}
+            # Google OAuth Configuration
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: google-client-id
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: google-client-secret
+            - name: GOOGLE_AUTH_CLIENT_REDIRECT_URI
+              value: {{ .Values.BEServer.env.GOOGLE_AUTH_CLIENT_REDIRECT_URI | quote }}
+            # S3 Storage Configuration
+            - name: S3_ENDPOINT
+              value: {{ .Values.BEServer.env.S3_ENDPOINT | quote }}
+            - name: S3_REGION
+              value: {{ .Values.BEServer.env.S3_REGION | default "us-east-1" | quote }}
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: s3-access-key
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: s3-secret-key
+            - name: S3_BUCKET
+              value: {{ .Values.BEServer.env.S3_BUCKET | quote }}
+            - name: S3_PUBLIC_URL
+              value: {{ .Values.BEServer.env.S3_PUBLIC_URL | quote }}
+            - name: S3_MAX_FILE_SIZE_MB
+              value: {{ .Values.BEServer.env.S3_MAX_FILE_SIZE_MB | default "100" | quote }}
+            # VNPay Configuration
+            - name: VNPAY_TMN_CODE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: vnpay-tmn-code
+            - name: VNPAY_HASH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: vnpay-hash-secret
+            - name: VNPAY_PAYMENT_URL
+              value: {{ .Values.BEServer.env.VNPAY_PAYMENT_URL | quote }}
+            - name: VNPAY_QUERY_URL
+              value: {{ .Values.BEServer.env.VNPAY_QUERY_URL | quote }}
+            - name: VNPAY_RETURN_URL
+              value: {{ .Values.BEServer.env.VNPAY_RETURN_URL | quote }}
+            - name: VNPAY_IPN_URL
+              value: {{ .Values.BEServer.env.VNPAY_IPN_URL | quote }}
+            # Client Configuration
+            - name: CLIENT_URL
+              value: {{ .Values.BEServer.env.CLIENT_URL | quote }}
+            - name: CACHE_TYPE
+              value: {{ .Values.BEServer.env.CACHE_TYPE | default "redis" | quote }}
+            # Application Configuration
+            - name: SERVER_PORT
+              value: {{ .Values.BEServer.port | quote }}
+            - name: LOGGING_LEVEL_ROOT
+              value: {{ .Values.BEServer.env.LOGGING_LEVEL_ROOT | default "INFO" | quote }}
+            - name: LOGGING_LEVEL_COM_SMARTRENT
+              value: {{ .Values.BEServer.env.LOGGING_LEVEL_COM_SMARTRENT | default "INFO" | quote }}
+{{- range $key, $value := .Values.BEServer.env.additional }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+{{- end }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            initialDelaySeconds: 40
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: {{ .Values.BEServer.resources.requests.memory | default "512Mi" }}
+              cpu: {{ .Values.BEServer.resources.requests.cpu | default "250m" }}
+            limits:
+              memory: {{ .Values.BEServer.resources.limits.memory | default "1Gi" }}
+              cpu: {{ .Values.BEServer.resources.limits.cpu | default "1000m" }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.BEServer.name }}
+  labels:
+    app: {{ .Values.BEServer.name }}
 spec:
   selector:
     app: {{ .Values.BEServer.name }}
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: {{ .Values.BEServer.port }}
       targetPort: {{ .Values.BEServer.targetPort }}
   type: {{ .Values.BEServer.serviceType }}

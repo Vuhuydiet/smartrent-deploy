@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: smartrent-prd
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/Vuhuydiet/smartrent-deploy
+    targetRevision: HEAD
+    path: charts/smartrent
+    helm:
+      valueFiles:
+        - values.yaml
+        - environments/prd/values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
+
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
