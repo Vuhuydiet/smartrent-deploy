@@ -12,10 +12,6 @@ spec:
   tls:
     - hosts:
         - {{ .Values.host }}
-        - scraper.{{ .Values.host }}
-{{- if eq .Values.env "dev" }}
-        - ai.{{ .Values.host }}
-{{- end }}
       secretName: smartrent-tls-{{ .Values.env }}
   rules:
     - host: {{ .Values.host }}
