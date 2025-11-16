@@ -19,7 +19,7 @@ BEServer:
     SENDER_EMAIL: "smartrent.tools@gmail.com"
     SENDER_NAME: "SmartRent"
     # Google OAuth
-    GOOGLE_AUTH_CLIENT_REDIRECT_URI: "http://localhost:3000/auth/callback/google"
+    GOOGLE_AUTH_CLIENT_REDIRECT_URI: "https://smartrent-fe.vercel.app/auth/callback/google"
     # S3 Storage
     S3_ENDPOINT: "https://9f3257b84fff2eb2cd583b3ba1a29aa1.r2.cloudflarestorage.com"
     S3_REGION: "auto"
@@ -29,10 +29,10 @@ BEServer:
     # VNPay
     VNPAY_PAYMENT_URL: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
     VNPAY_QUERY_URL: "sandbox.vnpayment.vn"
-    VNPAY_RETURN_URL: "http://smartrent-fe.vercel.app/payment/result"
-    VNPAY_IPN_URL: "http://localhost:8080/v1/payments/ipn/VNPAY"
+    VNPAY_RETURN_URL: "https://smartrent-fe.vercel.app/payment/result"
+    VNPAY_IPN_URL: "https://dev.smartrent-api.vuhuydiet.xyz/v1/payments/ipn/VNPAY"
     # Client URL
-    CLIENT_URL: "http://smartrent-fe.vercel.app"
+    CLIENT_URL: "https://smartrent-fe.vercel.app"
     CACHE_TYPE: "redis"
   resources:
     requests:

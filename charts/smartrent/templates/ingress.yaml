@@ -4,8 +4,19 @@ metadata:
   name: smartrent-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.host }}
+        - scraper.{{ .Values.host }}
+{{- if eq .Values.env "dev" }}
+        - ai.{{ .Values.host }}
+{{- end }}
+      secretName: smartrent-tls-{{ .Values.env }}
   rules:
     - host: {{ .Values.host }}
       http:
