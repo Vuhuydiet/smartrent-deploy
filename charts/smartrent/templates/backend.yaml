@@ -165,13 +165,6 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
 {{- end }}
-          resources:
-            requests:
-              memory: {{ .Values.BEServer.resources.requests.memory | default "512Mi" }}
-              cpu: {{ .Values.BEServer.resources.requests.cpu | default "250m" }}
-            limits:
-              memory: {{ .Values.BEServer.resources.limits.memory | default "1Gi" }}
-              cpu: {{ .Values.BEServer.resources.limits.cpu | default "1000m" }}
 ---
 apiVersion: v1
 kind: Service
