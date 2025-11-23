@@ -3,7 +3,7 @@ env: dev
 BEServer:
   replicas: 1
   image:
-    tag: latest
+    tag: 2a24bc08ecff0d179be1986dd1fc919314f0c841
   env:
     SPRING_PROFILES_ACTIVE: "dev"
     SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/smartrent?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
@@ -41,7 +41,6 @@ BEServer:
     limits:
       memory: "768Mi"
       cpu: "250m"
-
 AIServer:
   image:
     tag: dev-3146edd
