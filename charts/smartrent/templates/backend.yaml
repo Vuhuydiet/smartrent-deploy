@@ -149,6 +149,12 @@ spec:
               value: {{ .Values.BEServer.env.VNPAY_RETURN_URL | quote }}
             - name: VNPAY_IPN_URL
               value: {{ .Values.BEServer.env.VNPAY_IPN_URL | quote }}
+            # Google Maps API
+            - name: GOOGLE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: google-api-key
             # Client Configuration
             - name: CLIENT_URL
               value: {{ .Values.BEServer.env.CLIENT_URL | quote }}
