@@ -30,9 +30,30 @@ spec:
               value: {{ .Values.BEServer.env.SPRING_PROFILES_ACTIVE | default "production" | quote }}
             # Database Configuration
             - name: IDENTITY_SERVICE_DB_URL
-              value: {{ .Values.BEServer.env.SPRING_DATASOURCE_URL | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: db-url
             - name: SPRING_DATASOURCE_URL
-              value: {{ .Values.BEServer.env.SPRING_DATASOURCE_URL | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: db-url
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: db-host
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: db-port
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.BEServer.secrets.name }}
+                  key: db-name
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:

@@ -20,12 +20,41 @@ spec:
           imagePullPolicy: {{ .Values.AIServer.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.AIServer.port }}
-          envFrom:
-            - secretRef:
-                name: {{ .Values.AIServer.secrets.name }}
           env:
             - name: ENVIRONMENT
               value: {{ .Values.env | quote }}
+            # Database Configuration
+            - name: MYSQL_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.AIServer.secrets.name }}
+                  key: mysql-host
+            - name: MYSQL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.AIServer.secrets.name }}
+                  key: mysql-port
+            - name: MYSQL_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.AIServer.secrets.name }}
+                  key: mysql-database
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.AIServer.secrets.name }}
+                  key: mysql-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.AIServer.secrets.name }}
+                  key: mysql-password
+            # AI Configuration
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.AIServer.secrets.name }}
+                  key: gemini-api-key
           {{- range $key, $value := .Values.AIServer.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}

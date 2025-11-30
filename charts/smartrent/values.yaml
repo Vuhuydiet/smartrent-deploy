@@ -55,7 +55,6 @@ AIServer:
     name: ai-server-secrets
   env:
     VERSION: "1.0.0"
-    ENVIRONMENT: "development"
     DEBUG: "false"
 
 ScraperServer:
