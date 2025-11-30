@@ -3,7 +3,7 @@ env: dev
 BEServer:
   replicas: 1
   image:
-    tag: a65f857c6ee939418290ed4fca20229dee2dd41f
+    tag: 070ca9d10f9ea006904c78823b153f5f0201dbf6
   env:
     SPRING_PROFILES_ACTIVE: "dev"
     SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/smartrent?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
