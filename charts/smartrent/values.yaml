@@ -16,7 +16,7 @@ BEServer:
   env:
     SPRING_PROFILES_ACTIVE: "production"
     # Database Configuration (default values, override in environment-specific values)
-    SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/smartrent?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+    # SPRING_DATASOURCE_URL is now provided via secrets
     # Redis Configuration
     SPRING_DATA_REDIS_HOST: "redis"
     SPRING_DATA_REDIS_PORT: "6379"
@@ -91,14 +91,14 @@ ScraperServer:
 
 # Redis Configuration
 redis:
-  password: false  # Set to true if you want to enable Redis password authentication
+  password: false # Set to true if you want to enable Redis password authentication
 
 # Secrets Configuration
 # IMPORTANT: DO NOT commit actual secrets to git!
 # Use external secrets management (e.g., Sealed Secrets, External Secrets Operator, or ArgoCD Vault Plugin)
 # Or create secrets manually using kubectl before deployment
 secrets:
-  create: false  # Set to true only for development/testing
+  create: false # Set to true only for development/testing
   backend:
     dbUsername: "smartrent_user"
     dbPassword: "CHANGE_ME"
@@ -110,9 +110,5 @@ secrets:
     twilioAuthToken: ""
     zaloAppId: ""
     zaloAppSecret: ""
-  mysql:
-    rootPassword: "CHANGE_ME"
-    username: "smartrent_user"
-    password: "CHANGE_ME"
   redis:
     password: ""

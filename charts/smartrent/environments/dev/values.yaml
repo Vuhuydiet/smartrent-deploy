@@ -6,7 +6,7 @@ BEServer:
     tag: b2112260d26937be00970cbef1c23ca48a9191cc
   env:
     SPRING_PROFILES_ACTIVE: "dev"
-    SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/smartrent?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+    # SPRING_DATASOURCE_URL is now provided via secrets
     SPRING_DATA_REDIS_HOST: "redis"
     SPRING_DATA_REDIS_PORT: "6379"
     LOGGING_LEVEL_ROOT: "DEBUG"
