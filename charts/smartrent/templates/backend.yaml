@@ -25,6 +25,8 @@ spec:
               containerPort: {{ .Values.BEServer.port }}
               protocol: TCP
           env:
+            - name: AI_SERVICE_BASE_URL
+              value: "http://ai-server:8000"
             # Spring Profile
             - name: SPRING_PROFILES_ACTIVE
               value: {{ .Values.BEServer.env.SPRING_PROFILES_ACTIVE | default "production" | quote }}
