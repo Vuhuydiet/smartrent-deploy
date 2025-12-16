@@ -45,7 +45,7 @@ BEServer:
       cpu: "250m"
 AIServer:
   image:
-    tag: dev-695a99b
+    tag: dev-5e69378
   env:
     APP_NAME: "SmartRent AI Service"
     VERSION: "1.0.0"
