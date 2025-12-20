@@ -53,7 +53,7 @@ AIServer:
     DEBUG: "true"
 ScraperServer:
   image:
-    tag: dev-d2f0522
+    tag: dev-cfaaafe
   env:
     NODE_ENV: "development"
     PORT: "3000"
