@@ -3,7 +3,7 @@ env: dev
 BEServer:
   replicas: 1
   image:
-    tag: 2e4d3348123843b26ddbf7157b1925969e7125ab
+    tag: 8e5edcc552b6fde50d6632962dc78c59be2056e1
   env:
     SPRING_PROFILES_ACTIVE: "dev"
     # SPRING_DATASOURCE_URL is now provided via secrets
