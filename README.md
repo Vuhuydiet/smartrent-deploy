@@ -16,8 +16,6 @@ This repository contains Kubernetes manifests and Helm charts for deploying the 
 
 ```bash
 # Install cert-manager (if not already installed)
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.0/cert-manager.yaml
-
 # Update email in config/cert-manager-issuer.yaml
 # Then apply ClusterIssuer
 kubectl apply -f config/cert-manager-issuer.yaml

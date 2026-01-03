@@ -5,23 +5,23 @@ metadata:
   namespace: argocd
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-#    cert-manager.io/issuer: letsencrypt-nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
-  #  tls:
-  #  - hosts:
-  #    - argocd.smartrent.vuhuydiet.xyz
-  #    secretName: letsencrypt-nginx-quote
+  tls:
+  - hosts:
+    - argocd.smartrent.vuhuydiet.xyz
+    secretName: argocd-tls
 
   rules:
-    - host: argocd.smartrent.vuhuydiet.xyz
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: argocd-server
-                port:
-                  number: 80
+  - host: argocd.smartrent.vuhuydiet.xyz
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 80
