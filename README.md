@@ -18,6 +18,12 @@ This repository contains Kubernetes manifests and Helm charts for deploying the 
 # Install cert-manager (if not already installed)
 # Update email in config/cert-manager-issuer.yaml
 # Then apply ClusterIssuer
+kubectl -n argocd patch cm argocd-cmd-params-cm \
+  --type merge \
+  -p '{"data":{"server.insecure":"true"}}'
+kubectl -n argocd rollout restart deploy argocd-server
+
+
 kubectl apply -f config/cert-manager-issuer.yaml
 ```
 
