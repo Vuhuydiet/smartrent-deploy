@@ -1,4 +1,4 @@
-host: dev.smartrent-api.vuhuydiet.xyz
+host: dev.smartrent-api.smartrent.io.vn
 env: dev
 BEServer:
   replicas: 1
@@ -30,7 +30,7 @@ BEServer:
     VNPAY_PAYMENT_URL: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
     VNPAY_QUERY_URL: "sandbox.vnpayment.vn"
     VNPAY_RETURN_URL: "https://smartrent-fe.vercel.app/payment/result"
-    VNPAY_IPN_URL: "https://dev.smartrent-api.vuhuydiet.xyz/v1/payments/ipn/VNPAY"
+    VNPAY_IPN_URL: "https://dev.smartrent-api.smartrent.io.vn/v1/payments/ipn/VNPAY"
     # Client URL
     CLIENT_URL: "https://smartrent-fe.vercel.app"
     CACHE_TYPE: "redis"

@@ -15,7 +15,7 @@ spec:
   #    secretName: letsencrypt-nginx-quote
 
   rules:
-    - host: argocd.smartrent.vuhuydiet.xyz
+    - host: argocd.smartrent.io.vn
       http:
         paths:
           - path: /
