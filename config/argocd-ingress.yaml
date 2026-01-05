@@ -14,7 +14,7 @@ spec:
         - argocd.smartrent.vuhuydiet.xyz
       secretName: argocd-tls
   rules:
-    - host: argocd.smartrent.vuhuydiet.xyz
+    - host: argocd.smartrent.io.vn
       http:
         paths:
           - path: /
