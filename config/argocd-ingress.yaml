@@ -11,7 +11,7 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - argocd.smartrent.vuhuydiet.xyz
+        - argocd.smartrent.io.vn
       secretName: argocd-tls
   rules:
     - host: argocd.smartrent.io.vn
