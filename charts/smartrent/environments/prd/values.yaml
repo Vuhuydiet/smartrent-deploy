@@ -1,4 +1,4 @@
-host: smartrent-api.smartrent.io.vn
+host: api.smartrent.io.vn
 env: prd
 
 BEServer:

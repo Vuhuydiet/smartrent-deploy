@@ -1,4 +1,4 @@
-host: dev.smartrent-api.smartrent.io.vn
+host: dev.api.smartrent.io.vn
 env: dev
 BEServer:
   replicas: 1
