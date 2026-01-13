@@ -1,0 +1,62 @@
+# Prometheus configuration for K6 and cluster monitoring
+server:
+  enabled: true
+  persistentVolume:
+    enabled: true
+    size: 10Gi
+  retention: "15d"  # Keep metrics for 15 days
+
+  # Resource limits
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      memory: 256Mi
+
+  # Service configuration
+  service:
+    type: ClusterIP
+
+  # Ingress for Prometheus UI (optional)
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - prometheus.smartrent.io.vn
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus.smartrent.io.vn
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+
+# AlertManager - disable for now
+alertmanager:
+  enabled: false
+
+# Pushgateway - needed for K6 metrics
+pushgateway:
+  enabled: true
+  persistentVolume:
+    enabled: false
+  service:
+    type: ClusterIP
+
+# Node exporter - monitor cluster nodes
+nodeExporter:
+  enabled: true
+
+# Kube state metrics - monitor Kubernetes resources
+kube-state-metrics:
+  enabled: true
+
+# Additional scrape configs - merged with defaults
+extraScrapeConfigs: |
+  # Scrape Pushgateway (for K6 metrics)
+  - job_name: 'pushgateway'
+    honor_labels: true
+    static_configs:
+      - targets:
+        - prometheus-prometheus-pushgateway:9091
