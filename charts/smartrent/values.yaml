@@ -56,8 +56,14 @@ AIServer:
   env:
     VERSION: "1.0.0"
     DEBUG: "false"
+    # SmartRent Backend Configuration
     SMARTRENT_BACKEND_URL: http://backend-server:8080
-
+    # Gemini LLM Configuration
+    GEMINI_CHAT_MODEL: "gemini-2.5-flash"
+    GEMINI_VISION_MODEL: "gemini-2.5-flash"
+    GEMINI_PRICE_MODEL: "gemini-2.5-flash"
+    # Chat Configuration
+    MAX_LISTINGS_RETURN: "5"
 
 ScraperServer:
   name: scraper-server

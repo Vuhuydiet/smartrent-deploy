@@ -3,7 +3,7 @@ env: dev
 BEServer:
   replicas: 1
   image:
-    tag: c07259eea89ab6ab5425f18aa956970d3b58fdf1
+    tag: 69b960e04f001c14427db9fdfb14161c449f52a7
   env:
     SPRING_PROFILES_ACTIVE: "dev"
     # SPRING_DATASOURCE_URL is now provided via secrets
@@ -45,7 +45,7 @@ BEServer:
       cpu: "250m"
 AIServer:
   image:
-    tag: dev-5e69378
+    tag: dev-d57e57c
   env:
     APP_NAME: "SmartRent AI Service"
     VERSION: "1.0.0"
