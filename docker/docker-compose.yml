@@ -12,7 +12,6 @@ services:
     depends_on:
       - backend
       - ai
-      - scraper
 
   backend:
     image: vuhuydiet/smartrent-backend:${BACKEND_TAG:-latest}
@@ -93,23 +92,6 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       # Gemini
       GEMINI_API_KEY: ${GEMINI_API_KEY}
-
-  scraper:
-    image: vuhuydiet/smartrent-scraper:${SCRAPER_TAG:-latest}
-    restart: unless-stopped
-    environment:
-      NODE_ENV: ${SPRING_PROFILES_ACTIVE:-development}
-      PORT: "3000"
-      LOG_LEVEL: info
-      MAX_CONCURRENT_SCRAPERS: "5"
-      REQUEST_DELAY_MS: "1000"
-      RETRY_ATTEMPTS: "3"
-      TIMEOUT_MS: "30000"
-      HEADLESS: "true"
-      BROWSER_ARGS: "--no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage"
-      RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
-      BURST_LIMIT: "10"
-      DEBUG: "false"
 
   redis:
     image: redis:8.2.0-alpine
