@@ -1,0 +1,128 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - ai
+      - scraper
+
+  backend:
+    image: vuhuydiet/smartrent-backend:${BACKEND_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      SERVER_PORT: "8080"
+      # Database (Managed Database)
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      IDENTITY_SERVICE_DB_URL: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      # Redis
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: "6379"
+      REDIS_HOST: redis
+      REDIS_PWD: ""
+      # JWT
+      ACCESS_SIGNER_KEY: ${ACCESS_SIGNER_KEY}
+      REFRESH_SIGNER_KEY: ${REFRESH_SIGNER_KEY}
+      RESET_PASSWORD_SIGNER_KEY: ${RESET_PASSWORD_SIGNER_KEY}
+      VALID_DURATION: "3600"
+      REFRESHABLE_DURATION: "86400"
+      RESET_PASSWORD_DURATION: "900"
+      # Email (Brevo)
+      BREVO_API_KEY: ${BREVO_API_KEY}
+      SENDER_EMAIL: ${SENDER_EMAIL}
+      SENDER_NAME: "SmartRent"
+      # Google OAuth
+      CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_AUTH_CLIENT_REDIRECT_URI: ${GOOGLE_AUTH_CLIENT_REDIRECT_URI}
+      # S3 / Cloudflare R2
+      S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_REGION: auto
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET: ${S3_BUCKET}
+      S3_PUBLIC_URL: ${S3_PUBLIC_URL}
+      S3_MAX_FILE_SIZE_MB: "200"
+      # VNPay
+      VNPAY_TMN_CODE: ${VNPAY_TMN_CODE}
+      VNPAY_HASH_SECRET: ${VNPAY_HASH_SECRET}
+      VNPAY_PAYMENT_URL: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+      VNPAY_QUERY_URL: sandbox.vnpayment.vn
+      VNPAY_RETURN_URL: ${VNPAY_RETURN_URL}
+      VNPAY_IPN_URL: https://${API_DOMAIN}/v1/payments/ipn/VNPAY
+      # Google Maps
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      # App
+      CLIENT_URL: ${CLIENT_URL}
+      CACHE_TYPE: redis
+      AI_SERVICE_BASE_URL: http://ai:8000
+      APPLICATION_CORS_ALLOWED_ORIGINS: "*"
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_COM_SMARTRENT: DEBUG
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  ai:
+    image: vuhuydiet/smartrent-ai:${AI_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: ${SPRING_PROFILES_ACTIVE:-dev}
+      APP_NAME: "SmartRent AI Service"
+      VERSION: "1.0.0"
+      DEBUG: "false"
+      SMARTRENT_BACKEND_URL: http://backend:8080
+      # Database (Managed Database)
+      MYSQL_SERVER: ${DB_HOST}
+      MYSQL_PORT: ${DB_PORT}
+      MYSQL_DB: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      # Gemini
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+
+  scraper:
+    image: vuhuydiet/smartrent-scraper:${SCRAPER_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${SPRING_PROFILES_ACTIVE:-development}
+      PORT: "3000"
+      LOG_LEVEL: info
+      MAX_CONCURRENT_SCRAPERS: "5"
+      REQUEST_DELAY_MS: "1000"
+      RETRY_ATTEMPTS: "3"
+      TIMEOUT_MS: "30000"
+      HEADLESS: "true"
+      BROWSER_ARGS: "--no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage"
+      RATE_LIMIT_REQUESTS_PER_MINUTE: "60"
+      BURST_LIMIT: "10"
+      DEBUG: "false"
+
+  redis:
+    image: redis:8.2.0-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis_data:
+  caddy_data:
+  caddy_config:
