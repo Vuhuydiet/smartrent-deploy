@@ -1,0 +1,16 @@
+# Caddy tự động xin SSL từ Let's Encrypt cho tất cả domain bên dưới
+
+# Backend API
+{$API_DOMAIN} {
+    reverse_proxy backend:8080
+}
+
+# Scraper Service
+scraper.{$API_DOMAIN} {
+    reverse_proxy scraper:3000
+}
+
+# AI Service
+ai.{$API_DOMAIN} {
+    reverse_proxy ai:8000
+}
