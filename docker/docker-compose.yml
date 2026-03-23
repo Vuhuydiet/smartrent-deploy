@@ -73,6 +73,12 @@ services:
       APPLICATION_CORS_ALLOWED_ORIGINS: "*"
       LOGGING_LEVEL_ROOT: INFO
       LOGGING_LEVEL_COM_SMARTRENT: DEBUG
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
     depends_on:
       redis:
         condition: service_healthy
@@ -94,6 +100,21 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       # Gemini
       GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GEMINI_CHAT_MODEL: ${GEMINI_CHAT_MODEL:-gemini-2.5-flash}
+      GEMINI_VISION_MODEL: ${GEMINI_VISION_MODEL:-gemini-2.5-flash}
+      GEMINI_PRICE_MODEL: ${GEMINI_PRICE_MODEL:-gemini-2.0-flash-exp}
+      # Chat
+      MAX_LISTINGS_RETURN: ${MAX_LISTINGS_RETURN:-5}
+      # Langfuse
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_HOST: ${LANGFUSE_HOST:-https://cloud.langfuse.com}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   redis:
     image: redis:8.2.0-alpine
