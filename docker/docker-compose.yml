@@ -107,13 +107,22 @@ services:
       MYSQL_DB: ${DB_NAME}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-      # Vertex AI (Gemini)
+      # LLM provider — must match smartrent-ai's post-migration config.py.
+      # agent_factory.make_model dispatches on LLM_PROVIDER and uses GCP
+      # creds for the "gemini" provider via Vertex AI through LiteLLM.
+      LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
       GCP_CREDENTIALS_BASE64: ${GCP_CREDENTIALS_BASE64}
       GCP_PROJECT_ID: ${GCP_PROJECT_ID}
       GCP_LOCATION: ${GCP_LOCATION:-us-central1}
-      GEMINI_CHAT_MODEL: ${GEMINI_CHAT_MODEL:-gemini-2.5-flash}
-      GEMINI_VISION_MODEL: ${GEMINI_VISION_MODEL:-gemini-2.5-flash}
-      GEMINI_PRICE_MODEL: ${GEMINI_PRICE_MODEL:-gemini-2.0-flash-exp}
+      # Per-task model identifiers. The previous GEMINI_*_MODEL names were
+      # renamed to LLM_*_MODEL during the OpenAI-Agents-SDK migration; the
+      # old names are silently ignored by pydantic-settings (extra:"ignore")
+      # so production was falling back to defaults. Flash-lite was tested
+      # but skips tool calls under the 14-tool chat agent; fine for
+      # one-shot vision/price tasks.
+      LLM_CHAT_MODEL: ${LLM_CHAT_MODEL:-gemini-2.5-flash}
+      LLM_VISION_MODEL: ${LLM_VISION_MODEL:-gemini-2.5-flash-lite}
+      LLM_PRICE_MODEL: ${LLM_PRICE_MODEL:-gemini-2.5-flash-lite}
       # Chat
       MAX_LISTINGS_RETURN: ${MAX_LISTINGS_RETURN:-5}
       # Langfuse
