@@ -58,10 +58,13 @@ AIServer:
     DEBUG: "false"
     # SmartRent Backend Configuration
     SMARTRENT_BACKEND_URL: http://backend-server:8080
-    # Gemini LLM Configuration
-    GEMINI_CHAT_MODEL: "gemini-2.5-flash"
-    GEMINI_VISION_MODEL: "gemini-2.5-flash"
-    GEMINI_PRICE_MODEL: "gemini-2.5-flash"
+    # LLM Configuration — provider-agnostic names after the OpenAI-Agents-SDK
+    # migration. The old GEMINI_*_MODEL keys were silently ignored by
+    # pydantic-settings (extra:"ignore"), falling back to defaults.
+    LLM_PROVIDER: "gemini"
+    LLM_CHAT_MODEL: "gemini-2.5-flash"          # tool-using agent — flash-lite skips tool calls
+    LLM_VISION_MODEL: "gemini-2.5-flash-lite"   # one-shot vision
+    LLM_PRICE_MODEL: "gemini-2.5-flash-lite"    # one-shot price prediction
     # Chat Configuration
     MAX_LISTINGS_RETURN: "5"
 
