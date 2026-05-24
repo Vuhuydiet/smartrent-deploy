@@ -1,0 +1,13 @@
+# Build Caddy with the mholt/caddy-ratelimit module so the edge can throttle
+# anonymous bursts on hot public endpoints (e.g. /listings/stats/categories).
+# Upstream caddy:2-alpine ships without rate_limit support, so we add it via
+# xcaddy at build time and copy the binary into the runtime image.
+
+FROM caddy:2-builder-alpine AS builder
+
+RUN xcaddy build \
+    --with github.com/mholt/caddy-ratelimit
+
+FROM caddy:2-alpine
+
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy

@@ -1,6 +1,12 @@
 services:
   caddy:
-    image: caddy:2-alpine
+    # Custom image bakes in the mholt/caddy-ratelimit module (Dockerfile.caddy).
+    # The base image caddy:2-alpine has no rate_limit support out of the box;
+    # we need it to throttle anonymous traffic on the hot listing endpoints.
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    image: smartrent-caddy:rate-limit
     restart: unless-stopped
     ports:
       - "80:80"
