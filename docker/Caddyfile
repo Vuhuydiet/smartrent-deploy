@@ -1,11 +1,64 @@
-# Caddy tự động xin SSL từ Let's Encrypt cho tất cả domain bên dưới
+# Caddy tự động xin SSL từ Let's Encrypt cho tất cả domain bên dưới.
+# Custom image (Dockerfile.caddy) bakes in the mholt/caddy-ratelimit module
+# so the rate_limit directive below is recognised.
+
+# Global options — let rate_limit sit alongside reverse_proxy inside site blocks.
+{
+    order rate_limit before basicauth
+}
 
 # Backend API
 {$API_DOMAIN} {
+    # Per-IP rate limits. Two zones with their own sliding-window budget:
+    #   • heavy_listings : aggregate / search endpoints that touch ~45k rows
+    #     and trigger a cold DB query on every cache miss. Cap at 30 req/min/IP.
+    #   • public_general : everything else on /v1/* (GET listings, news,
+    #     amenities, public profile). Cap at 120 req/min/IP — enough headroom
+    #     for a human browsing the site while still blocking a burst from one
+    #     host. Authenticated requests share the same per-IP bucket; if we
+    #     later want a higher cap for logged-in users we can add a third zone
+    #     keyed on the Authorization header.
+    # Behind a load balancer (DigitalOcean LB, Cloudflare, …) set
+    # trusted_proxies so {remote_host} resolves to the real client IP rather
+    # than the proxy's address.
+    rate_limit {
+        zone heavy_listings {
+            match {
+                method POST
+                path /v1/listings/search /v1/listings/stats/*
+            }
+            key {remote_host}
+            events 30
+            window 1m
+        }
+        zone public_general {
+            match {
+                path /v1/*
+            }
+            key {remote_host}
+            events 120
+            window 1m
+        }
+    }
+
     reverse_proxy backend:8080
 }
 
 # AI Service
 ai.{$API_DOMAIN} {
+    # /verify-listing kicks off a Gemini Vision call (90 s timeout, Vertex AI
+    # quota). One abusive client can drain the project's daily quota in
+    # minutes, so cap tighter than the public API.
+    rate_limit {
+        zone ai_verify {
+            match {
+                path /api/v1/verify-listing
+            }
+            key {remote_host}
+            events 10
+            window 1m
+        }
+    }
+
     reverse_proxy ai:8000
 }
