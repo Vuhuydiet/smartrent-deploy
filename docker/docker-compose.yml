@@ -78,6 +78,20 @@ services:
       ZALOPAY_KEY1: ${ZALOPAY_KEY1}
       ZALOPAY_KEY2: ${ZALOPAY_KEY2}
       ZALOPAY_RETURN_URL: ${ZALOPAY_RETURN_URL}
+      # SePay Payment Gateway — credentials MUST be set in the host .env.
+      # The backend binds these via @ConfigurationProperties(prefix="sepay")
+      # in application.yml; without this passthrough the container gets empty
+      # merchant-id/secret-key and SePay auth fails.
+      SEPAY_ENV: ${SEPAY_ENV:-sandbox}
+      SEPAY_MERCHANT_ID: ${SEPAY_MERCHANT_ID}
+      SEPAY_SECRET_KEY: ${SEPAY_SECRET_KEY}
+      SEPAY_PAYMENT_METHOD: ${SEPAY_PAYMENT_METHOD:-BANK_TRANSFER}
+      SEPAY_CURRENCY: ${SEPAY_CURRENCY:-VND}
+      SEPAY_SUCCESS_URL: ${SEPAY_SUCCESS_URL:-${CLIENT_URL}/payment/result?status=success}
+      SEPAY_ERROR_URL: ${SEPAY_ERROR_URL:-${CLIENT_URL}/payment/result?status=error}
+      SEPAY_CANCEL_URL: ${SEPAY_CANCEL_URL:-${CLIENT_URL}/payment/result?status=cancel}
+      SEPAY_IPN_URL: ${SEPAY_IPN_URL:-https://${API_DOMAIN}/v1/payments/webhook/sepay}
+      SEPAY_EXPIRY_MINUTES: ${SEPAY_EXPIRY_MINUTES:-15}
       # Google Maps
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       # App
