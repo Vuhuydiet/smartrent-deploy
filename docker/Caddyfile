@@ -60,5 +60,16 @@ ai.{$API_DOMAIN} {
         }
     }
 
-    reverse_proxy ai:8000
+    # Chat now goes through the backend proxy (authenticated + rate-limited);
+    # the AI service also requires X-Internal-Api-Key on these paths. Block the
+    # public chat endpoints at the edge as defense-in-depth — the browser no
+    # longer calls the AI service directly for chat.
+    @chat path /api/v1/chat /api/v1/chat/*
+    handle @chat {
+        respond 404
+    }
+
+    handle {
+        reverse_proxy ai:8000
+    }
 }

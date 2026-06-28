@@ -99,6 +99,8 @@ services:
       ADMIN_URL: ${ADMIN_URL}
       CACHE_TYPE: redis
       AI_SERVICE_BASE_URL: http://ai:8000
+      # Sent as X-Internal-Api-Key when the backend relays chat to the AI service.
+      INTERNAL_AI_API_KEY: ${INTERNAL_AI_API_KEY}
       APPLICATION_CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
       LOGGING_LEVEL_ROOT: INFO
       LOGGING_LEVEL_COM_SMARTRENT: DEBUG
@@ -121,6 +123,8 @@ services:
       VERSION: "1.0.0"
       DEBUG: "false"
       SMARTRENT_BACKEND_URL: http://backend:8080
+      # Shared secret required on /chat + /chat/stream (rejects public callers).
+      INTERNAL_AI_API_KEY: ${INTERNAL_AI_API_KEY}
       # Database (Managed Database)
       MYSQL_SERVER: ${DB_HOST}
       MYSQL_PORT: ${DB_PORT}
